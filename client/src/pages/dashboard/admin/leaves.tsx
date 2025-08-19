@@ -97,7 +97,9 @@ const AllLeaves = () => {
         }
       );
 
-      toast.success("Demande approuvée avec succès !");
+      if (res.data.status === 200) {
+        toast.success("Demande approuvée avec succès !");
+      }
       setApprovalLetter(null);
       setOpenApproveDialog(false);
       fetchLeaves(); // rafraîchir la liste
@@ -125,7 +127,9 @@ const AllLeaves = () => {
           },
         }
       );
-      toast.success("Demande rejetée avec succès !");
+      if (res.data.status === 200) {
+        toast.success("Demande rejetée avec succès !");
+      }
       setOpenDialog(false);
       setComment("");
       setSelectedLeaveId(null);
