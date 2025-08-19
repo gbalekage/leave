@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Utilisateurs {
+  id                     String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                   String
+  email                  String            @unique
+  matricule              String            @unique
+  password               String
+  address                String
+  phone                  String
+  dateNaissance          DateTime
+  verificationCode       String?
+  verificationExpiration DateTime?
+  resetToken             String?
+  resetTokenExpiration   DateTime?
+  isVerified             Boolean           @default(false)
+  lastLogin              DateTime          @default(now())
+  role                   Role              @default(EMPLOYEE)
+  sexe                   Sexe?
+  leaves                 Conge[]           @relation("UtilisateursConge")
+  balances               BalanceConge[]
+  reviews                Conge[]           @relation("Reviewer")
+  createdAt              DateTime          @default(now())
+  LeaveHistory           HistoriqueConge[]
+}
+
+model Conge {
+  id          String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId      String            @db.Uuid
+  user        Utilisateurs      @relation("UtilisateursConge", fields: [userId], references: [id])
+  type        LeaveType
+  startDate   DateTime
+  endDate     DateTime
+  duration    Int
+  reason      String
+  status      LeaveStatus       @default(EN_ATTENTE)
+  reviewedBy  String?           @db.Uuid
+  letterUrl   String?
+  reviewer    Utilisateurs?     @relation("Reviewer", fields: [reviewedBy], references: [id])
+  comment     String?
+  documentUrl String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  history     HistoriqueConge[]
+}
+
+model BalanceConge {
+  id     String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String       @db.Uuid
+  user   Utilisateurs @relation(fields: [userId], references: [id])
+  type   LeaveType
+  year   Int
+  total  Int
+  used   Int          @default(0)
+}
+
+model HistoriqueConge {
+  id        String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  leaveId   String        @db.Uuid
+  leave     Conge         @relation(fields: [leaveId], references: [id])
+  action    HistoryAction
+  byUserId  String        @db.Uuid
+  byUser    Utilisateurs  @relation(fields: [byUserId], references: [id])
+  createdAt DateTime      @default(now())
+  note      String?
+}
+
+enum LeaveType {
+  ANNUEL
+  EXCEPTIONNEL
+  MATERNITE
+  PATERNITE
+}
+
+enum LeaveStatus {
+  EN_ATTENTE
+  APPROUVE
+  REJETE
+  ANNULE
+  REPOUSSE
+}
+
+enum HistoryAction {
+  CREE
+  MODIFIE
+  APPROUVE
+  REJETE
+  ANNULE
+  REPOUSSE
+}
+
+enum Role {
+  RH
+  EMPLOYEE
+}
+
+enum Sexe {
+  MASCULIN
+  FEMININ
+}
