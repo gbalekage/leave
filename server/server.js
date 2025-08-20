@@ -27,6 +27,9 @@ app.use(
 );
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+// test app
+app.get("/", (req, res) => res.send("API is working"));
+
 // routes
 app.use("/api/users", userRoutes);
 app.use("/api/leaves", leavesRoutes);
