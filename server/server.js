@@ -11,7 +11,7 @@ const path = require("path");
 const fs = require("fs");
 const fileUpload = require("express-fileupload");
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
 
 const app = express();
