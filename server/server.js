@@ -19,7 +19,7 @@ const app = express();
 // middlewares
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true, origin: clientUrl }));
+app.use(cors());
 app.use(
   fileUpload({
     createParentPath: true,
