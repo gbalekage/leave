@@ -79,6 +79,8 @@ export const SignInForm = ({
           err.response?.data?.message ||
             "Une erreur est survenue lors de la connexion."
         );
+        console.error(err);
+        console.log(err);
       }
     } finally {
       setLoading(false);
